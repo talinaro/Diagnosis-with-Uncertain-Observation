@@ -10,8 +10,8 @@ class System:
         self.outputs: list[IO] = outputs
         self.gates: list[Gate] = gates
 
-    @staticmethod
-    def parse(filepath):
+    @classmethod
+    def parse(cls, filepath):
         """ Creates a System from the given .sys file.
 
         Args:
@@ -25,10 +25,10 @@ class System:
             inputs, outputs = IO.parse_from_file(inputs_lines=read_until(f),
                                                  outputs_lines=read_until(f))
             gates = Gate.parse_from_file(lines=read_until(f))
-            return System(id=sys_id,
-                          inputs=inputs,
-                          outputs=outputs,
-                          gates=gates)
+            return cls(id=sys_id,
+                       inputs=inputs,
+                       outputs=outputs,
+                       gates=gates)
 
     def __str__(self):
         return f'System {self.id}: ' \
