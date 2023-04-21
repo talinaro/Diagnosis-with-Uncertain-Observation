@@ -1,0 +1,7 @@
+INVERTER = 'inverter'
+AND = 'and'
+OR = 'or'
+NAND = 'nand'
+NOR = 'nor'
+XOR = 'xor'
+BUFFER = 'buffer'
