@@ -1,0 +1,1 @@
+SYS_FILE_EXTENSION = 'sys'
