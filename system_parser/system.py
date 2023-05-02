@@ -4,11 +4,26 @@ from utils import read_clear_line, read_until
 
 
 class System:
+    INSTANCES = {}  # key: id, value: System
+
     def __init__(self, id, inputs, outputs, gates):
         self.id: str = id
         self.inputs: list[IO] = inputs
         self.outputs: list[IO] = outputs
         self.gates: list[Gate] = gates
+
+    @classmethod
+    def get(cls, id: str):
+        """ Gets the System by id.
+
+        Args:
+            id (str): the id as appears in the .sys files
+
+        Returns:
+            System. Instance of cls of the provided id
+                    or None if does not exist
+        """
+        return cls.INSTANCES.get(id, None)
 
     @classmethod
     def parse(cls, filepath):
@@ -30,7 +45,7 @@ class System:
                        outputs=outputs,
                        gates=gates)
 
-    def __str__(self):
+    def __repr__(self):
         return f'System {self.id}: ' \
                f'{len(self.inputs)} inputs, ' \
                f'{len(self.outputs)} outputs, ' \

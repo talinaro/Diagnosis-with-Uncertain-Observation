@@ -23,10 +23,10 @@ def read_until(f, ending='.') -> list[str]:
     return lines
 
 
-def string_list_to_list(s):
+def string_list_to_list(s) -> list[str]:
     """ Converts string in list format to real list.
      E.g.:
         '[i1,i2,i3].'   ->  ['i1', 'i2', 'i3']
         '[[i1,i2,i3],'  ->  ['i1', 'i2', 'i3']
      """
-    return s.strip('[],.').split(',')
+    return s.strip('[],.()').split(',')

@@ -1,3 +1,4 @@
+from system_parser.consts import INPUT_PREFIX, OUTPUT_PREFIX
 from utils import flatten, string_list_to_list
 
 
@@ -9,7 +10,7 @@ class IO:
         It actually saves all the IOs that had been already created while a system generation,
         and got cleared before any new system generation.
     """
-    CACHE = {}
+    CACHE = {}  # key: id, value: IO
 
     def __init__(self, id, value=None):
         self.id: str = id
@@ -70,3 +71,11 @@ class IO:
     @classmethod
     def __clear_cache(cls):
         cls.CACHE = {}
+
+    @staticmethod
+    def is_input(id: str):
+        return id.startswith(INPUT_PREFIX)
+
+    @staticmethod
+    def is_output(id: str):
+        return id.startswith(OUTPUT_PREFIX)
