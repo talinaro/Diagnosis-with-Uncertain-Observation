@@ -5,3 +5,6 @@ NAND = 'nand'
 NOR = 'nor'
 XOR = 'xor'
 BUFFER = 'buffer'
+
+INPUT_PREFIX = 'i'
+OUTPUT_PREFIX = 'o'

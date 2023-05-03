@@ -17,16 +17,16 @@ def read_until(f, ending='.') -> list[str]:
      """
     line = read_clear_line(f)
     lines: list[str] = [line]
-    while not line.endswith(ending):
+    while line and not line.endswith(ending):
         line = read_clear_line(f)
         lines.append(line)
     return lines
 
 
-def string_list_to_list(s):
+def string_list_to_list(s) -> list[str]:
     """ Converts string in list format to real list.
      E.g.:
         '[i1,i2,i3].'   ->  ['i1', 'i2', 'i3']
         '[[i1,i2,i3],'  ->  ['i1', 'i2', 'i3']
      """
-    return s.strip('[],.').split(',')
+    return s.strip('[],.()').split(',')
