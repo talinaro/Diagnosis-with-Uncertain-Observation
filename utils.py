@@ -17,7 +17,7 @@ def read_until(f, ending='.') -> list[str]:
      """
     line = read_clear_line(f)
     lines: list[str] = [line]
-    while not line.endswith(ending):
+    while line and not line.endswith(ending):
         line = read_clear_line(f)
         lines.append(line)
     return lines
