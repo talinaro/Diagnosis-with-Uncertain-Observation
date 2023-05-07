@@ -13,22 +13,22 @@ Dev Usage:
 import operator
 from dataclasses import dataclass
 
-from system_parser.consts import INVERTER, AND, OR, NAND, NOR, XOR, BUFFER
+from circuits_parser.consts import INVERTER, AND, OR, NAND, NOR, XOR, BUFFER
 
 
 @dataclass
-class Operator:
+class OperatorType:
     name: str
     op: operator
 
 
-Inverter = Operator(name=INVERTER, op=operator.__not__)
-And = Operator(name=AND, op=operator.__and__)
-Or = Operator(name=OR, op=operator.__or__)
-Nand = Operator(name=NAND, op=lambda a, b: not (a and b))
-Nor = Operator(name=NOR, op=lambda a, b: not (a or b))
-Xor = Operator(name=XOR, op=operator.__xor__)
-Buffer = Operator(name=BUFFER, op=lambda a: a)
+Inverter = OperatorType(name=INVERTER, op=operator.__not__)
+And = OperatorType(name=AND, op=operator.__and__)
+Or = OperatorType(name=OR, op=operator.__or__)
+Nand = OperatorType(name=NAND, op=lambda a, b: not (a and b))
+Nor = OperatorType(name=NOR, op=lambda a, b: not (a or b))
+Xor = OperatorType(name=XOR, op=operator.__xor__)
+Buffer = OperatorType(name=BUFFER, op=lambda a: a)
 
 types = (Inverter, And, Or, Nand, Nor, Xor, Buffer)
 operators = {

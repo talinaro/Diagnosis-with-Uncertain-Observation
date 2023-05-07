@@ -1,1 +1,2 @@
 SYS_FILE_EXTENSION = 'sys'
+OBS_FILE_EXTENSION = 'obs'

@@ -1,6 +1,7 @@
 import re
+from functools import reduce
 
-from system_parser.operators import Operator, operators
+from circuits_parser.operators import OperatorType, operators
 
 
 class Component:
@@ -12,9 +13,14 @@ class Component:
     """
     NAME_FORMAT = r'(\D+)(\d*)'
 
-    def __init__(self, operation, inputs_num=1):
-        self.operation: Operator = operation
+    def __init__(self, operator, inputs_num=1):
+        self.operator_type: OperatorType = operator
         self.inputs_num: int = inputs_num
+
+    @property
+    def op(self):
+        return self.operator_type.op if self.inputs_num == 1 \
+            else lambda *l: reduce(self.operator_type.op, l)
 
     @classmethod
     def parse(cls, name):
@@ -31,7 +37,7 @@ class Component:
         assert op_name in operators, \
             f'No such component {op_name}'
 
-        component = cls(operation=operators[op_name])
+        component = cls(operator=operators[op_name])
         if inputs_num_str:
             component.inputs_num = int(inputs_num_str)
         return component

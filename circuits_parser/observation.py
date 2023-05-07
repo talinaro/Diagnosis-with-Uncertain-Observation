@@ -1,6 +1,6 @@
 import re
 
-from system_parser.io import IO
+from circuits_parser.io import IO
 from utils import read_until, string_list_to_list
 
 
@@ -11,8 +11,8 @@ class Observation:
     def __init__(self, system_id, obs_id, inputs_values, outputs_values):
         self.system_id: str = system_id
         self.obs_id: str = obs_id
-        self.inputs_values: dict = inputs_values  # key: i_id, value: bool
-        self.outputs_values: dict = outputs_values  # key: o_id, value: bool
+        self.inputs_values: dict[str, bool] = inputs_values    # key: input id, value: bool
+        self.outputs_values: dict[str, bool] = outputs_values  # key: output id, value: bool
 
     @classmethod
     def parse(cls, filepath):
@@ -28,7 +28,7 @@ class Observation:
             observations = []
             while obs_str := ''.join(read_until(f)):
                 system_id, obs_id, io_values = re.match(cls.OBSERVATION_FORMAT, obs_str).groups()
-                inputs_values, outputs_values = cls.__parse_io_values(io_values)
+                inputs_values, outputs_values = cls.__parse_io_values(io_values, obs_id)
                 observations.append(cls(system_id=system_id,
                                         obs_id=obs_id,
                                         inputs_values=inputs_values,
@@ -36,7 +36,7 @@ class Observation:
             return observations
 
     @classmethod
-    def __parse_io_values(cls, io_values: str):
+    def __parse_io_values(cls, io_values: str, obs_id):
         """ Retrieves the boolean values of the observation
         into separate dictionaries for inputs and outputs.
 
@@ -58,3 +58,8 @@ class Observation:
             elif IO.is_output(io_id):
                 outputs[io_id] = bool_val
         return inputs, outputs
+
+    def __str__(self):
+        return f'Observation {self.obs_id} System {self.system_id}: ' \
+               f'inputs: {self.inputs_values}, ' \
+               f'outputs: {self.outputs_values}'

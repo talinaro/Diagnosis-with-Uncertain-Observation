@@ -1,5 +1,5 @@
-from system_parser.components import Component
-from system_parser.io import IO
+from circuits_parser.components import Component
+from circuits_parser.io import IO
 from utils import string_list_to_list
 
 
@@ -10,13 +10,17 @@ class Gate:
         self.output: IO = output
         self.inputs: list[IO] = inputs
 
+    @property
+    def op(self):
+        return self.logical_type.op
+
     @classmethod
-    def from_list(cls, logical_type_name: str, _id: str, output_id: str, *inputs_ids):
+    def from_list(cls, logical_type_name: str, id: str, output_id: str, *inputs_ids):
         """ Creates a Gate from a single line of the .sys files.
 
         Args:
             logical_type_name: gate's name as appears in the files (e.g. 'nand2')
-            _id: gate's id as appears in the files (e.g. 'gate21')
+            id: gate's id as appears in the files (e.g. 'gate21')
             output_id: gate's output id as appears in the files (e.g. 'o1')
             *inputs_ids: as many input ids as the gate receives (e.g. 'z15', 'i2')
 
@@ -25,7 +29,7 @@ class Gate:
         """
         return cls(
             logical_type=Component.parse(logical_type_name),
-            id=_id,
+            id=id,
             output=IO.get(output_id),
             inputs=IO.parse_list(list(inputs_ids))
         )
@@ -46,3 +50,10 @@ class Gate:
             lines
         ))
         return [cls.from_list(*gate_params) for gate_params in gates_lists if len(gate_params) >= 4]
+
+    def calc_output(self):
+        assert all(io.is_available() for io in self.inputs), \
+            f'{self.id}: not all the inputs are available'
+
+        inputs_values = [io.value for io in self.inputs]
+        self.output.value = self.op(*inputs_values)
