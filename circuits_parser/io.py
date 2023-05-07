@@ -1,4 +1,4 @@
-from system_parser.consts import INPUT_PREFIX, OUTPUT_PREFIX
+from circuits_parser.consts import INPUT_PREFIX, OUTPUT_PREFIX
 from utils import flatten, string_list_to_list
 
 
@@ -9,6 +9,8 @@ class IO:
         The CACHE is here for internal usage only!!!
         It actually saves all the IOs that had been already created while a system generation,
         and got cleared before any new system generation.
+
+        DO NOT use the get() method not while system generation!
     """
     CACHE = {}  # key: id, value: IO
 
@@ -20,6 +22,8 @@ class IO:
     def get(cls, id: str):
         """ Creates an IO from it's id
             or returns it from the cache if were previously created.
+
+            NOTE: Usage is available ONLY while system generation!!!
 
         Args:
             id (str): the id as appears in the .sys files
@@ -79,3 +83,25 @@ class IO:
     @staticmethod
     def is_output(id: str):
         return id.startswith(OUTPUT_PREFIX)
+
+    def is_available(self):
+        return self.value is not None
+
+    @staticmethod
+    def list_to_raw_dict(ios):
+        return {
+            io.id: io.value
+            for io in ios
+        }
+
+    def clear(self):
+        self.value = None
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __str__(self):
+        return f'{self.id}={self.value}'
