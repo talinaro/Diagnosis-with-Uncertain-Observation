@@ -74,6 +74,7 @@ class System:
         return outputs_dict
 
     def clear_ios(self):
+        """ Clears all the IO values in the whole system (including inner gates) """
         ios = set(
             self.inputs + self.outputs +
             flatten([

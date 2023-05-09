@@ -12,6 +12,9 @@ class Gate:
 
     @property
     def op(self):
+        """ Usage:
+                self.op(*args) - activate the logic operation with any amount of inputs
+        """
         return self.logical_type.op
 
     @classmethod
@@ -52,6 +55,7 @@ class Gate:
         return [cls.from_list(*gate_params) for gate_params in gates_lists if len(gate_params) >= 4]
 
     def calc_output(self):
+        """ Calculates the output of the gate based on the provided inputs. """
         assert all(io.is_available() for io in self.inputs), \
             f'{self.id}: not all the inputs are available'
 
