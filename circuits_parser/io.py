@@ -89,12 +89,25 @@ class IO:
 
     @staticmethod
     def list_to_raw_dict(ios):
+        """ Converts a list of IOs into simple dictionary of ids and values.
+        E.g.:
+            [IO(id='i1', value=True), IO(id='i2', value=False)]
+                -> { 'i1': True, 'i2': False }
+
+        Args:
+            ios (list): list of IO instances
+
+        Returns:
+            Dict. Generated dictionary from the given list when:  key: io id
+                                                                  value: io bool value
+        """
         return {
             io.id: io.value
             for io in ios
         }
 
     def clear(self):
+        """ Clears the value of the IO """
         self.value = None
 
     def __eq__(self, other):

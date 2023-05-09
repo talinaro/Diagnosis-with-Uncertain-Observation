@@ -1,7 +1,7 @@
 """ The main functionality of the package:
     * parse_system - Parsing the system from the data .sys files
     * parse_observations - Parsing the observations from the data .obs files
-    * predict_system_output -
+    * predict_system_output - Predicting the output a system should get for the input of the provided observation
 """
 from circuits_parser.observation import Observation
 from circuits_parser.prediction import Prediction

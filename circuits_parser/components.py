@@ -10,6 +10,9 @@ class Component:
     Attributes:
         self.operation (Operator): logic operation of the component
         self.inputs_num (int): number of inputs the component receives
+
+    Usage:
+        self.op(*args) - activate the logic operation with any amount of inputs
     """
     NAME_FORMAT = r'(\D+)(\d*)'
 

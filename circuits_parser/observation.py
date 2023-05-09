@@ -21,7 +21,7 @@ class Observation:
         Args:
             filepath (str): .obs file path
 
-        Yields:
+        Returns:
             list[Observation]. List of new instances of cls generated from the provided args
         """
         with open(filepath) as f:
@@ -37,8 +37,7 @@ class Observation:
 
     @classmethod
     def __parse_io_values(cls, io_values: str, obs_id):
-        """ Retrieves the boolean values of the observation
-        into separate dictionaries for inputs and outputs.
+        """ Retrieves the boolean values of the observation into separate dictionaries for inputs and outputs.
 
         Args:
             io_values: string of all the input and output values as appears in the .obs files
