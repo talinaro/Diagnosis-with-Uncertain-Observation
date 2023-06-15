@@ -15,6 +15,4 @@ def parse_observations(filepath):
 
 
 def predict_output(observation: Observation):
-    # return Prediction.objects.create(system=obs.system,
-    #                                  inputs=obs.inputs)
     return Prediction.objects.create(observation=observation)
