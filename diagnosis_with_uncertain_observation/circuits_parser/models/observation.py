@@ -2,9 +2,11 @@ import re
 
 from django.db import models
 
+from .gate import Gate
 from .io import IO
 from .system import System
-from ..utils import read_until, string_list_to_list
+from ..consts import MAX_FAULTY_COMPONENTS
+from ..utils import read_until, string_list_to_list, is_superset, remove_subset
 
 
 class Observation(models.Model):
@@ -53,3 +55,70 @@ class Observation(models.Model):
             elif IO.is_output(io_name):
                 outputs.append(io)
         return inputs, outputs
+
+    @property
+    def prediction(self):
+        return self.system.predict_output(inputs=self.inputs.all())
+
+    def find_diagnoses(self, candidates: list[list[Gate]] = None, diagnoses: list[list[Gate]] = []):
+        # initialize each candidate with a single gate
+        if candidates is None:
+            candidates = [[gate] for gate in self.system.gates.all()]
+        # no more candidates, so the diagnoses are ready
+        if len(candidates) == 0:
+            return diagnoses
+
+        # check whether some candidates are diagnoses
+        new_diagnoses = list(filter(self.is_diagnosis, candidates))
+        diagnoses += new_diagnoses
+        # remove the new diagnoses from candidates
+        remove_subset(superset=candidates, subset=new_diagnoses)
+
+        # update the candidates by adding more gates
+        new_candidates = []
+        for candidate in candidates:
+            optional_gates: set[Gate] = set(self.system.gates.all()) - set(candidate)
+            expanded_candidate: list[list[Gate]] = [
+                candidate + [gate]
+                for gate in optional_gates
+                if not self.is_diagnosis_superset(candidate + [gate], diagnoses)
+            ]
+            if expanded_candidate:
+                new_candidates += expanded_candidate
+        candidates = self.distinct_candidates(new_candidates)
+
+        # recursive call
+        return self.find_diagnoses(candidates, diagnoses)
+
+    def is_diagnosis(self, candidate: list[Gate]):
+        # invert the operation of the gates in the candidate
+        for gate in candidate:
+            gate.is_healthy = False
+            gate.save()
+
+        # predict the output of the system with this observation using the same system with inverted gates
+        new_outputs = self.prediction
+
+        # revert the system to it's original state
+        for gate in candidate:
+            gate.is_healthy = True
+            gate.save()
+
+        # compare this prediction with the observed output
+        assert len(new_outputs) == len(self.outputs.all())
+        return all(obs_output.is_member(new_outputs) for obs_output in self.outputs.all())
+
+    @staticmethod
+    def is_diagnosis_superset(candidate: list[Gate], diagnoses: list[list[Gate]]):
+        return any(
+            is_superset(superset=candidate, subset=diagnosis)
+            for diagnosis in diagnoses
+        )
+
+    @staticmethod
+    def distinct_candidates(candidates: list[list[Gate]]):
+        distinct: list[list[Gate]] = []
+        for candidate in candidates:
+            if set(candidate) not in list(map(set, distinct)):
+                distinct.append(candidate)
+        return distinct

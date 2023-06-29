@@ -1,4 +1,5 @@
 import itertools
+import time
 
 
 def flatten(nested_list: list[list]):
@@ -40,3 +41,18 @@ def clone_django_object(obj):
     obj.pk = None
     obj.save()
     return obj
+
+
+def is_superset(superset, subset):
+    return all(item in superset for item in subset)
+
+
+def remove_subset(superset, subset):
+    assert is_superset(superset, subset)
+    for item in subset:
+        superset.remove(item)
+    return superset
+
+
+def mean(l):
+    return sum(l) / len(l)
