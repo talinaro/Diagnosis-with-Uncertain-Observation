@@ -81,7 +81,8 @@ class Observation(models.Model):
             expanded_candidate: list[list[Gate]] = [
                 candidate + [gate]
                 for gate in optional_gates
-                if not self.is_diagnosis_superset(candidate + [gate], diagnoses)
+                if len(candidate) < MAX_FAULTY_COMPONENTS and
+                   not self.is_diagnosis_superset(candidate + [gate], diagnoses)
             ]
             if expanded_candidate:
                 new_candidates += expanded_candidate

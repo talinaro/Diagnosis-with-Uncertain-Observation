@@ -7,7 +7,7 @@ import time
 
 from django.db.models import Count
 
-from .models import System, Observation
+from .models import System, Observation, Diagnosis
 from .utils import mean
 
 
@@ -21,17 +21,17 @@ def parse_observations(filepath):
 
 def find_diagnosis_run_time():
     system_obs_run_times = {}
-    for system in System.objects.annotate(size=Count('gates')).filter(size__lt=20).order_by('size'):
+    for system in System.objects.annotate(size=Count('gates')).order_by('size'):
         print(f'Start running on system {system.name}')
 
         obs_run_times = []
         for obs in Observation.objects.filter(system=system):
             start = time.time()
-            obs.find_diagnoses()
+            diagnoses = obs.find_diagnoses()
             end = time.time()
             run_time = end - start
             obs_run_times.append(run_time)
-            with open(f'{system.name}.txt', 'a') as txt:
+            with open(f'diagnosis_with_uncertain_observation/circuits_parser/results/{system.name}.txt', 'a') as txt:
                 txt.write(f'{run_time}\n')
             print(f'system {system.name}, observation {obs.obs_name}, run time: {run_time}')
 
@@ -40,12 +40,12 @@ def find_diagnosis_run_time():
             system_obs_run_times[system_size] = []
         system_obs_run_times[system_size] += obs_run_times
 
-        with open(f'{system.name}.pickle', 'wb') as pkl:
+        with open(f'diagnosis_with_uncertain_observation/circuits_parser/results/{system.name}.pickle', 'wb') as pkl:
             pickle.dump({system_size: mean(obs_run_times)}, pkl)
 
-        print(f'{system.name} -> len {system_size}: {obs_run_times}')
+        print(f'{system.name} -> len {system_size}: {mean(obs_run_times)}')
 
-    with open('bfs_run_time.pickle', 'wb') as pkl:
+    with open('diagnosis_with_uncertain_observation/circuits_parser/results/bfs_run_time.pickle', 'wb') as pkl:
         pickle.dump(
             {
                 system_size: mean(obs_run_times)
