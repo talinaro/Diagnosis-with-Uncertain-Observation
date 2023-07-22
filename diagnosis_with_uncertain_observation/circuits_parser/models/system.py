@@ -61,11 +61,12 @@ class System(models.Model):
         Args:
             raw_gates: lists and strings representation of the gates as appear in the .sys files
         """
-        for logical_type_name, gate_name, output_name, *inputs_names in raw_gates:
+        for i, (logical_type_name, gate_name, output_name, *inputs_names) in enumerate(raw_gates):
             output_io = self.all_ios.filter(name=output_name).get() \
                 if self.all_ios.filter(name=output_name) \
                 else IO.objects.create(name=output_name)
             gate = Gate.objects.create(
+                serial_num=i,
                 logical_type=Component.parse(logical_type_name),
                 name=gate_name,
                 output=output_io
@@ -92,7 +93,7 @@ class System(models.Model):
             input_obj.save()
 
         # propagate the inputs through the system to calculate the outputs
-        for gate in self.gates.all():
+        for gate in self.gates.order_by('serial_num'):
             gate.calc_output()
 
         outputs = [

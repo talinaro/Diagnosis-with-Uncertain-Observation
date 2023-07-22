@@ -6,17 +6,21 @@ from ..utils import string_list_to_list
 
 
 class Gate(models.Model):
+    serial_num = models.IntegerField()
     logical_type = models.ForeignKey(Component, on_delete=models.CASCADE)
     name = models.CharField(max_length=20)
     output = models.ForeignKey(IO, on_delete=models.CASCADE, related_name='output_gate')
     inputs = models.ManyToManyField(IO, related_name='input_gate')
+    is_healthy = models.BooleanField(default=True)
 
     @property
     def op(self):
         """ Usage:
                 self.op(*args) - activate the logic operation with any amount of inputs
         """
-        return self.logical_type.op
+        gate_op = self.logical_type.op
+        return gate_op if self.is_healthy \
+            else lambda *l: not gate_op(*l)
 
     @classmethod
     def parse_from_file(cls, lines: list[str]):

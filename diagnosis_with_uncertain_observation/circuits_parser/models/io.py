@@ -47,3 +47,9 @@ class IO(models.Model):
         """ Clears the value of the IO """
         self.value = None
         self.save()
+
+    def is_member(self, ios):
+        return any(self == io for io in ios)
+
+    def __eq__(self, other):
+        return self.name == other.name and self.value == other.value
