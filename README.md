@@ -31,11 +31,11 @@ Then, the diagnosis searching algorithm runs (based on [O2D (Observations to Dia
 
 
 ## Usage
-Create the DB from systems and observations files in `circuits_examples\` directory:
+Create the DB of systems and observations from the files in `circuits_examples\` directory:
 ```
   python diagnosis_with_uncertain_observation/manage.py migrate
 ```
-Open django DB shell with:
+Open django DB shell with
 ```
   python diagnosis_with_uncertain_observation/manage.py shell
 ```
@@ -45,19 +45,20 @@ and run the following in it:
   find_diagnosis_run_time()
 ```
 Now you have a DB of all the systems, observations (including the uncertain ones) and diagnoses with their probabilities.
-- To get the top `n` diagnoses of a system named `system_name` run in django DB shell:
+
+- To get the top `n` diagnoses of a system named `system_name` run **in django DB shell**:
 ```python
   from circuits_parser.api import top_diagnoses
   best_diagnoses = top_diagnoses(system_name, n)
 ```
 
-- To save viewable results in `.txt` files run in django DB shell:
+- To save viewable results in `.txt` files run **in django DB shell**:
 ```python
   from circuits_parser.api import save_txt_results
   save_txt_results(system_name)
 ```
 
-- To save pythonic results in `.pickle` files run in django DB shell:
+- To save pythonic results in `.pickle` files run **in django DB shell**:
 ```python
   from circuits_parser.api import save_pickle_results
   save_pickle_results(system_name)
