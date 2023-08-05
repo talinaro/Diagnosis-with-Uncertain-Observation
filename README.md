@@ -25,12 +25,12 @@ Then, the diagnosis searching algorithm runs (based on [O2D (Observations to Dia
   - For each uncertain observation, run BFS algorithm for diagnosis searching.
   - Calculate the probability of each diagnosis to be true.
 - Sum the probabilities of similar diagnosis that came from different observations for the same system.
-- Sort the diagnosis by descending probability and return the top 5.
-
-???????????????????????????? The logic can be accessed via the API in `diagnosis_with_uncertain_observations/circuit_parser/api.py`.
+- Sort the diagnosis by descending probability.
 
 
 ## Usage
+Make sure to [install Django](https://www.w3schools.com/django/django_install_django.php).
+
 Create the DB of systems and observations from the files in `circuits_examples\` directory:
 ```
   python diagnosis_with_uncertain_observation/manage.py migrate
@@ -41,8 +41,8 @@ Open django DB shell with
 ```
 and run the following in it:
 ```python
-  from circuits_parser.api import find_diagnosis_run_time
-  find_diagnosis_run_time()
+  from circuits_parser.api import find_diagnosis
+  find_diagnosis()
 ```
 Now you have a DB of all the systems, observations (including the uncertain ones) and diagnoses with their probabilities.
 
@@ -58,19 +58,32 @@ Now you have a DB of all the systems, observations (including the uncertain ones
   save_txt_results(system_name)
 ```
 
-- To save pythonic results in `.pickle` files run **in django DB shell**:
-```python
-  from circuits_parser.api import save_pickle_results
-  save_pickle_results(system_name)
-```
-
-All the parameters are configurable in the `config.py` file.
+(The API above can be seen in `diagnosis_with_uncertain_observations/circuit_parser/api.py`)
 
 
 ## Assumptions
-- The systems are pretty heavy and the algorithm takes not negligible time to run, so we assumed that the probability of more than 3 gates to be faulty is 0.
-- The probability of a single observed output to be true is 0.9 ?????????????????????????
-- The probability of a single faulty gate is 0.01 ?????????????????????????????????
+- The systems are pretty heavy and the algorithm takes not negligible time to run, so we assumed that at most 3 gates can be faulty.
+- The probability of a single faulty gate is 0.01
+- The optimal probability of a single observed output to be true is 0.99
+
+All the parameters are configurable through the `diagnosis_with_uncertain_observations/circuit_parser/config.py` file.
 
 
 ## Evaluation
+We ran the O2D algorithm on the 3 smallest systems:
+- c17 (size of 6 gates) - 252 uncertain observations
+- 74182 (size of 19 gates) - 111 uncertain observations
+- 74283 (size of 36 gates) - 5 uncertain observations
+
+The mean run times of the algorithm on a single observation is dispalyed in the following plot:
+
+![mean run times](/diagnosis_with_uncertain_observation/circuits_parser/results/run_times/mean-run-times-plot.png)
+
+In order to find the optimal probability that represents uncertainty (and to ensure that it really improves the results), at first, we ran the algorithm without considering uncertainty at all. (The results can be seen in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/***_1.0.txt` files.)
+Our experiments ran over various values of `p=[0.7, 0.75, 0.8, 0.85, 0.9]` and we came to the conclusion that the algorithm performs bad for small `p`s, which means - large uncertainty.
+So the next batch of experiments was on `p=[0.91, 0.92, ..., 0.99]`, and we have recognized the same tendency, but here **all of them outperformed** the baseline (where `p=1.0` without uncertainty).
+
+Our results defenetly support the [paper](https://ojs.aaai.org/index.php/AAAI/article/view/5664) conclusion:
+> _Experimental evaluation shows that this third algorithm can be very effective in cases where the number of faults is small and the uncertainty over the observations is not large._
+
+(All our experiments results can be seen in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/` directory.
