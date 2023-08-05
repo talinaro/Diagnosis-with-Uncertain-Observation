@@ -5,7 +5,7 @@ from django.db import models
 from .gate import Gate
 from .io import IO
 from .system import System
-from ..consts import MAX_FAULTY_COMPONENTS
+from ..config import MAX_FAULTY_COMPONENTS
 from ..utils import read_until, string_list_to_list, is_superset, remove_subset
 
 
@@ -60,7 +60,7 @@ class Observation(models.Model):
     def prediction(self):
         return self.system.predict_output(inputs=self.inputs.all())
 
-    def find_diagnoses(self, candidates: list[list[Gate]] = None, diagnoses: list[list[Gate]] = []):
+    def find_diagnoses(self, candidates: list[list[Gate]] = None, diagnoses: tuple[list[Gate]] = ()):
         # initialize each candidate with a single gate
         if candidates is None:
             candidates = [[gate] for gate in self.system.gates.all()]
@@ -69,7 +69,7 @@ class Observation(models.Model):
             return diagnoses
 
         # check whether some candidates are diagnoses
-        new_diagnoses = list(filter(self.is_diagnosis, candidates))
+        new_diagnoses = tuple(filter(self.is_diagnosis, candidates))
         diagnoses += new_diagnoses
         # remove the new diagnoses from candidates
         remove_subset(superset=candidates, subset=new_diagnoses)

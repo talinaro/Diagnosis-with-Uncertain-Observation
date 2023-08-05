@@ -5,3 +5,4 @@ from .observation import Observation
 from .operators import OperatorType
 from .system import System
 from .diagnosis import Diagnosis
+from .uncertain_observation import UncertainObservation
