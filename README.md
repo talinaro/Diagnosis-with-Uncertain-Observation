@@ -17,7 +17,7 @@ The project implemented using [Django Framework](https://docs.djangoproject.com/
 At first, the systems and the observations should be parsed from the `txt` data files and stored as model instances in the DB. 
 It should be done only once at the beginning, especially that most of the systems are heavy (it takes a few minutes to parse all the data).
 
-Then, the diagnosis searching algorithm runs (based on O2D algorithm [Cazes et al. 2020](https://ojs.aaai.org/index.php/AAAI/article/view/5664)):
+Then, the diagnosis searching algorithm runs (based on O2D algorithm [Cazes and Kalech 2020](https://ojs.aaai.org/index.php/AAAI/article/view/5664)):
 - Sort the systems by size (gates amount).
 - For each system, run over the observations:
   - For each observation, create all it's uncertain optional observations (by generating all outputs permutations).
