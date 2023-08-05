@@ -17,7 +17,7 @@ The project implemented using [Django Framework](https://docs.djangoproject.com/
 At first, the systems and the observations should be parsed from the `txt` data files and stored as model instances in the DB. 
 It should be done only once at the beginning, especially that most of the systems are heavy (it takes a few minutes to parse all the data).
 
-Then, the diagnosis searching algorithm runs (based on [O2D (Observations to Diagnoses)](https://ojs.aaai.org/index.php/AAAI/article/view/5664) algorithm):
+Then, the diagnosis searching algorithm runs (based on O2D algorithm [Cazes et al. 2020](https://ojs.aaai.org/index.php/AAAI/article/view/5664)):
 - Sort the systems by size (gates amount).
 - For each system, run over the observations:
   - For each observation, create all it's uncertain optional observations (by generating all outputs permutations).
@@ -81,7 +81,7 @@ The mean run times of the algorithm on a single observation is dispalyed in the 
 
 In order to find the optimal probability that represents uncertainty (and to ensure that it really improves the results), at first, we ran the algorithm without considering uncertainty at all. (The results are available in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/***_1.0.txt` files.)
 
-Our experiments ran over various values of `p=[0.7, 0.75, 0.8, 0.85, 0.9]` and we came to the conclusion that the algorithm performs bad for small `p`s, which means - large uncertainty.
+Our experiments ran over various values of `p=[0.7, 0.75, 0.8, 0.85, 0.9]` and we came to the conclusion that the algorithm performs bad for small probabilities, which means - large uncertainty.
 
 So the next batch of experiments was on `p=[0.91, 0.92, ..., 0.99]`, and we have recognized the same tendency, but here **all of them outperformed** the baseline (where `p=1.0` without uncertainty).
 
@@ -92,4 +92,4 @@ Our results defenetly support the [paper](https://ojs.aaai.org/index.php/AAAI/ar
 
 
 ## Reference
-[Model-Based Diagnosis with Uncertain Observations](https://ojs.aaai.org/index.php/AAAI/article/view/5664)
+Our work based on [D. Cazes and M. Kalech, “Model-Based Diagnosis with Uncertain Observations”, AAAI, vol. 34, no. 03, pp. 2766-2773, Apr. 2020.](https://ojs.aaai.org/index.php/AAAI/article/view/5664)
