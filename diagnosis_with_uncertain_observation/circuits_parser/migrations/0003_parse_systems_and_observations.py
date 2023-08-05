@@ -2,7 +2,8 @@ import glob
 
 from django.db import migrations
 
-from ..consts import DATA_SYSTEMS_DIR, SYS_FILE_EXTENSION, DATA_OBSERVATIONS_DIR, OBS_FILE_EXTENSION
+from ..consts import SYS_FILE_EXTENSION, OBS_FILE_EXTENSION
+from diagnosis_with_uncertain_observation.circuits_parser.config import DATA_SYSTEMS_DIR, DATA_OBSERVATIONS_DIR
 from ..api import parse_system, parse_observations
 
 

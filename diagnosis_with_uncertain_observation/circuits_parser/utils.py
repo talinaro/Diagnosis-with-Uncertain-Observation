@@ -1,5 +1,4 @@
 import itertools
-import time
 
 
 def flatten(nested_list: list[list]):
@@ -56,3 +55,10 @@ def remove_subset(superset, subset):
 
 def mean(l):
     return sum(l) / len(l)
+
+
+def num_to_booleans(num, length) -> list[bool]:
+    return [
+        bool(eval(bit_str))
+        for bit_str in format(num, f'0{length}b')
+    ]

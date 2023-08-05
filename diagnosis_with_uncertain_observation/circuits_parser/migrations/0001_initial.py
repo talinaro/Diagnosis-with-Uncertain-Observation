@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('invalid_gates', models.ManyToManyField(to='circuits_parser.gate')),
-                ('observation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='diagnosis', to='circuits_parser.observation')),
+                ('uncertain_observation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='diagnosis', to='circuits_parser.observation')),
             ],
         ),
         migrations.AddField(
