@@ -7,7 +7,7 @@ We would like to take in consideration the fact that the observations can be mis
 
 ## Data
 The data consists of `txt` files of system descriptions and observations.
-Each system has a single description file `.sys` and a single `.obs` file (with corresponding name) of multiple observations propagated through the system.
+Each system has a single description file `.sys` and a single `.obs` file (with corresponding name) of multiple observations that had propagated through the system.
 Examples of those files are available in `circuits_examples\` directory.
 
 
@@ -58,13 +58,13 @@ Now you have a DB of all the systems, observations (including the uncertain ones
   save_txt_results(system_name)
 ```
 
-(The API above can be seen in `diagnosis_with_uncertain_observations/circuit_parser/api.py`)
+(The API above is available in `diagnosis_with_uncertain_observations/circuit_parser/api.py`)
 
 
 ## Assumptions
 - The systems are pretty heavy and the algorithm takes not negligible time to run, so we assumed that at most 3 gates can be faulty.
 - The probability of a single faulty gate is 0.01
-- The optimal probability of a single observed output to be true is 0.99
+- The optimal probability of a single observed output to be true is 0.99 (see explanation in [Evaluation](https://github.com/talinaro/Diagnosis-with-Uncertain-Observation#evaluation))
 
 All the parameters are configurable through the `diagnosis_with_uncertain_observations/circuit_parser/config.py` file.
 
@@ -79,11 +79,17 @@ The mean run times of the algorithm on a single observation is dispalyed in the 
 
 ![mean run times](/diagnosis_with_uncertain_observation/circuits_parser/results/run_times/mean-run-times-plot.png)
 
-In order to find the optimal probability that represents uncertainty (and to ensure that it really improves the results), at first, we ran the algorithm without considering uncertainty at all. (The results can be seen in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/***_1.0.txt` files.)
+In order to find the optimal probability that represents uncertainty (and to ensure that it really improves the results), at first, we ran the algorithm without considering uncertainty at all. (The results are available in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/***_1.0.txt` files.)
+
 Our experiments ran over various values of `p=[0.7, 0.75, 0.8, 0.85, 0.9]` and we came to the conclusion that the algorithm performs bad for small `p`s, which means - large uncertainty.
+
 So the next batch of experiments was on `p=[0.91, 0.92, ..., 0.99]`, and we have recognized the same tendency, but here **all of them outperformed** the baseline (where `p=1.0` without uncertainty).
 
 Our results defenetly support the [paper](https://ojs.aaai.org/index.php/AAAI/article/view/5664) conclusion:
 > _Experimental evaluation shows that this third algorithm can be very effective in cases where the number of faults is small and the uncertainty over the observations is not large._
 
-(All our experiments results can be seen in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/` directory.
+(All our experiments results can be seen in `diagnosis_with_uncertain_observations/circuit_parser/results/diagnosis_probabilities/` directory.)
+
+
+## Reference
+[Model-Based Diagnosis with Uncertain Observations](https://ojs.aaai.org/index.php/AAAI/article/view/5664)
